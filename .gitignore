@@ -1,0 +1,11 @@
+# dependencies
+node_modules
+
+# deploy
+.firebase
+
+# local
+.runtimeconfig.json
+
+# logs
+npm-debug.log*
