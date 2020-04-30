@@ -1,39 +1,42 @@
-.PHONY: config deploy dev help webhook cleanup
+.PHONY: dev help install tg-cleanup tg-updates tg-webhook tg-webhook-delete tg-webhook-info
+
+SHELL := /bin/bash
 
 default: help
 
-BOT_TOKEN = $(shell jq -r '.bot.token' .runtimeconfig.json | sed 's/\"//g')
+define read_env
+	@set -o allexport && source .env && set +o allexport
+endef
 
 #######################################
-#             FIREBASE                #
+#               APP                   #
 #######################################
-config: ## to create a local configuration file
-	@firebase functions:config:get > .runtimeconfig.json
-	@echo '.runtimeconfig.json' created
-	@echo "\e[1m\e[33mDon't forget to override parameters!"
-
-deploy: ## to run firebase deploy
-	@firebase deploy
-
 dev: ## to start the local server
+	@if [ ! -f .env -a -f .env.dist ]; then cp .env.dist > .env; fi
+	@$(call read_env) && scripts/tg.sh webhook-check
 	@firebase serve
+
+install: ## to install dependencies
+	 @npm i --prefix functions
 
 #######################################
 #             TELEGRAM                #
 #######################################
-cleanup: ## to cleanup pending updates
-	@curl -s https://api.telegram.org/bot$(BOT_TOKEN)/deleteWebhook | jq
-	@updateID=$(shell curl -s https://api.telegram.org/bot1129141864:AAGz5ZTR1IphVyNwUVdWCSBmYbOoVveQn9s/getUpdates | jq '.result[-1].update_id') ; \
-	if [ "$$updateID" != null ]; then \
-		offset=`expr $$updateID + 1` ; \
-		curl -s https://api.telegram.org/bot$(BOT_TOKEN)/getUpdates?offset=$$offset | jq; \
-	fi;
+tg-cleanup: ## to cleanup pending updates
+	make tg-webhook-delete
+	@$(call read_env) && scripts/tg.sh cleanup
 
-updates: ## to poll updates
-	@curl -s https://api.telegram.org/bot$(BOT_TOKEN)/getUpdates | jq
+tg-updates: ## to poll updates
+	@$(call read_env) && scripts/tg.sh updates | jq
 
-webhook: ## to update the webhook (make webhook URL=https://xxx.yy or empty to delete)
-	@curl -F "url=$(URL)" https://api.telegram.org/bot$(BOT_TOKEN)/setWebhook
+tg-webhook: ## to update the webhook (make webhook URL=https://xxx.yy or empty to delete)
+	@$(call read_env) && scripts/tg.sh webhook-set $(URL)| jq
+
+tg-webhook-delete: ## to delete webhook
+	@$(call read_env) && scripts/tg.sh webhook-delete | jq
+
+tg-webhook-info: ## to get info about webhook
+	@$(call read_env) && scripts/tg.sh webhook-info | jq
 
 #######################################
 #               MISC                  #

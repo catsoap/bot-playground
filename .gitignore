@@ -4,8 +4,8 @@ node_modules
 # deploy
 .firebase
 
-# local
-.runtimeconfig.json
+# environment variables
+.env
 
 # logs
 npm-debug.log*

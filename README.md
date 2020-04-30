@@ -1,7 +1,8 @@
 # Telegram Bot Playground
 
-Play project to interact with a Telegram Bot  
-t.me/PlgrndBot
+![ci](https://github.com/catsoap/tg-bot-playground/workflows/ci/badge.svg)
+
+Play project to interact with a Telegram Bot
 
 ## Requirements
 
@@ -24,25 +25,28 @@ to see a help menu.
 
 ## Functions Dev
 
-You usually want to interact with another bot during development, to avoid unwanted
-side effects with prod.  
-Run `make config` to generate a local configuration file, and fill-in your own bot.
+Install dependencies with `make install`
+
+You need to login to firebase to be able to run functions locally.
 
 To launch the functions, run `make dev`.
 
-Then to make your functions reachable by Telegram, you need to expose your
-localhost, you can use a free service for this: [localhost.run](http://localhost.run/)  
-There is no tool to install, just use SSH like this:
+Then to make your local webhook is reachable by Telegram, you need to expose your
+localhost.  
+You can use a free service for this: [localhost.run](http://localhost.run/),
+there is no tool to install, just use SSH like this:
 
 ```bash
 ssh -R 80:localhost:5001 ssh.localhost.run
 ```
 
-Finally, you need to set the webhook on your bot.  
-Before that, be sure you edited the previously generated configuration file, then run:
+Some Makefile targets have been made to ease interacting with Telegram.  
+To be able to use them, fill-in your dev bot token in the `.env` file.
+
+You can set the webhook on your bot like this: (given you filled-in the **BOT_TOKEN** variable in `.env`)
 
 ```bash
-make webhook URL=https://xxx-yyy.localhost.run/tgbotplayground/us-central1/webhook
+make tg-webhook URL=https://xxx-yyy.localhost.run/tgbotplayground/us-central1/webhook
 ```
 
 ## Useful links
