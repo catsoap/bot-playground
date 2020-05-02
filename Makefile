@@ -1,6 +1,11 @@
-.PHONY: dev help install tg-cleanup tg-updates tg-webhook tg-webhook-delete tg-webhook-info
+.PHONY: help install run run-watch test tg-cleanup tg-updates tg-webhook \
+tg-webhook-delete tg-webhook-info
 
 SHELL := /bin/bash
+
+TG = scripts/tg.sh
+WATCH = scripts/watch.sh
+NPM = npm --prefix functions
 
 default: help
 
@@ -11,32 +16,39 @@ endef
 #######################################
 #               APP                   #
 #######################################
-dev: ## to start the local server
+install: ## to install dependencies
+	@$(NPM) i
 	@if [ ! -f .env -a -f .env.dist ]; then cp .env.dist > .env; fi
-	@$(call read_env) && scripts/tg.sh webhook-check
+	@$(call read_env) && $(TG) webhook-check
+	firebase functions:config:get > .runtimeconfig.json
+
+run: ## to start the local server
 	@firebase serve
 
-install: ## to install dependencies
-	 @npm i --prefix functions
+run-watch: ## to start local server with watch
+	@$(WATCH) functions/src '$(NPM) run build' 'firebase serve'
+
+test: ## to launch tests
+	@$(NPM) run test
 
 #######################################
 #             TELEGRAM                #
 #######################################
 tg-cleanup: ## to cleanup pending updates
 	make tg-webhook-delete
-	@$(call read_env) && scripts/tg.sh cleanup
+	@$(call read_env) && $(TG) cleanup
 
 tg-updates: ## to poll updates
-	@$(call read_env) && scripts/tg.sh updates | jq
+	@$(call read_env) && $(TG) updates | jq
 
 tg-webhook: ## to update the webhook (make webhook URL=https://xxx.yy or empty to delete)
-	@$(call read_env) && scripts/tg.sh webhook-set $(URL)| jq
+	@$(call read_env) && $(TG) webhook-set $(URL)| jq
 
 tg-webhook-delete: ## to delete webhook
-	@$(call read_env) && scripts/tg.sh webhook-delete | jq
+	@$(call read_env) && $(TG) webhook-delete | jq
 
 tg-webhook-info: ## to get info about webhook
-	@$(call read_env) && scripts/tg.sh webhook-info | jq
+	@$(call read_env) && $(TG) webhook-info | jq
 
 #######################################
 #               MISC                  #

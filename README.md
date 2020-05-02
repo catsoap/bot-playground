@@ -29,7 +29,8 @@ Install dependencies with `make install`
 
 You need to login to firebase to be able to run functions locally.
 
-To launch the functions, run `make dev`.
+To launch the functions, run `make run`.  
+A watcher is also available, just run `make run-watch`.
 
 Then to make your local webhook is reachable by Telegram, you need to expose your
 localhost.  
@@ -53,5 +54,6 @@ make tg-webhook URL=https://xxx-yyy.localhost.run/tgbotplayground/us-central1/we
 
 https://firebase.google.com/docs/functions/config-env  
 https://firebase.google.com/docs/functions/local-emulator  
+https://firebase.google.com/docs/functions/unit-testing#testing_http_functions  
 https://core.telegram.org/bots/webhooks  
 https://core.telegram.org/bots/api
