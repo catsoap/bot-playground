@@ -1,7 +1,7 @@
 import functions from "firebase-functions-test";
 
 const testEnv = functions();
-testEnv.mockConfig({ bot: { token: "xxxx" } });
+testEnv.mockConfig({ bot: { token: "" } });
 const myFunctions = require("../src/index.ts");
 
 describe("load without crashing", () => {
