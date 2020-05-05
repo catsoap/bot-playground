@@ -55,5 +55,8 @@ make tg-webhook URL=https://xxx-yyy.localhost.run/tgbotplayground/us-central1/we
 https://firebase.google.com/docs/functions/config-env  
 https://firebase.google.com/docs/functions/local-emulator  
 https://firebase.google.com/docs/functions/unit-testing#testing_http_functions  
+https://firebase.google.com/docs/reference/admin/node/admin.firestore  
+https://medium.com/swlh/testing-guide-for-cloud-firestore-functions-and-security-rules-39d9f3c92d99  
+https://medium.com/@moki298/test-your-firebase-cloud-functions-locally-using-cloud-functions-shell-32c821f8a5ce  
 https://core.telegram.org/bots/webhooks  
 https://core.telegram.org/bots/api

@@ -23,11 +23,10 @@ install: ## to install dependencies
 
 run: ## to start the local server
 	@$(call read_env) && $(TG) webhook-check
-	@firebase serve
+	@firebase emulators:start --only firestore,functions
 
 run-watch: ## to start local server with watch
-	@$(call read_env) && $(TG) webhook-check
-	@$(WATCH) functions/src '$(NPM) run build' 'firebase serve'
+	make run & npm --prefix functions run watch
 
 test: ## to launch tests
 	@$(NPM) run test
